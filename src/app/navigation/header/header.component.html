@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <div fxHide.gt-xs>
+  <div>
     <button mat-icon-button (click)="onToggleSidenav()">
       <mat-icon>menu</mat-icon>
     </button>
@@ -7,19 +7,19 @@
   <div>
     <a routerLink="/">LOGO</a>
   </div>
-  <div fxFlex fxLayout fxLayoutAlign="flex-end" fxHide.xs>
-    <ul fxLayout fxLayoutGap="10px" class="navigation-items">
-      <li>
+  <div>
+    <ul>
+      <li *ngIf="!isAuthenticated">
         <a routerLink="/signup">Signup</a>
       </li>
-      <li>
+      <li *ngIf="!isAuthenticated">
         <a routerLink="/login">Login</a>
       </li>
-      <li>
+      <li *ngIf="isAuthenticated">
         <a routerLink="/training">Training</a>
       </li>
-      <li>
-        <a>Logout</a>
+      <li *ngIf="isAuthenticated">
+        <a style="cursor: pointer" (click)="onLogout()">Logout</a>
       </li>
     </ul>
   </div>

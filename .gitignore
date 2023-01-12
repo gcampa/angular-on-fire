@@ -42,4 +42,9 @@ testem.log
 Thumbs.db
 
 # firebase key
-/src/app/environments/*
+src/environments/*
+
+# Firebase
+.firebase
+*-debug.log
+.runtimeconfig.json

@@ -3,50 +3,61 @@ import { AuthData } from './auth-data.model';
 import { User } from "./user.model";
 import { Router, RouterModule } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { TrainingService } from '../training/training.service';
 
 @Injectable()
 export class AuthService {
-
-    private user!: User | null;
     authChange = new Subject<boolean>();
+    private isAuthenticated = false
 
-    constructor(private router: Router) {}
+    constructor(
+        private router: Router,
+        private afAuth: AngularFireAuth,
+        private trainingService: TrainingService) { }
+
+    initAuthListener() {
+        this.afAuth.authState.subscribe(user => {
+            if (user) {
+                this.isAuthenticated = true
+                this.authChange.next(true);
+                this.router.navigate(['/training']);
+            } else {
+                this.trainingService.cancelSubscriptions();
+                this.isAuthenticated = false
+                this.authChange.next(false)
+                this.router.navigate(['/login']);
+            }
+        });
+    }
 
     registerUser(authData: AuthData): void {
-        this.user = {
-            email: authData.email,
-            userId: Math.round(Math.random() * 10000).toString()
-        }
-        this.authSuccessfully()
+        this.afAuth.createUserWithEmailAndPassword(authData.email, authData.password)
+            .then(result => {
+                console.log(result)
+            }).catch(error => {
+                console.log(error)
+            })
     }
 
     login(authData: AuthData): void {
-        this.user = {
-            email: authData.email,
-            userId: Math.round(Math.random() * 10000).toString()
-        }
-        this.authSuccessfully()
+        this.afAuth.signInWithEmailAndPassword(authData.email, authData.password)
+            .then(result => {
+                console.log(result)
+            }).catch(error => {
+                console.log(error)
+            })
     }
 
     logout(): void {
-        this.user = null
-        this.authChange.next(false)
-        this.router.navigate(['/login']);
+        this.afAuth.signOut();        
     }
 
-    getUSer(): User | undefined {
-        if (this.user) {
-            return { ...this.user }
-        }
+    getUser(): User | undefined {
         return undefined
     }
 
     isAuth() {
-        return this.user != null
-    }
-
-    private authSuccessfully(): void {
-        this.authChange.next(true);
-        this.router.navigate(['/training']);
+        return this.isAuthenticated
     }
 }

@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "ng-fitness-tracker-af2d7": {
+      "hosting": {
+        "angular-on-fire": [
+          "ng-fitness-tracker-af2d7"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "ng-fitness-tracker-af2d7"
+  }
+}
